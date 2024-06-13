@@ -30,7 +30,7 @@
             e.preventDefault();
             const url = document.getElementById("url").value;
 
-            const response = await fetch("/api/scrape", {
+            const response = await fetch("/scrape", {
               method: "POST",
               headers: {
                 "Content-Type": "application/json",
