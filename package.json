@@ -1,0 +1,23 @@
+{
+  "name": "web-scraper-app",
+  "version": "1.0.0",
+  "description": "",
+  "main": "api/server.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "node api/server.js"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "body-parser": "^1.20.2",
+    "express": "^4.19.2",
+    "puppeteer": "^22.9.0",
+    "puppeteer-core": "^22.11.0",
+    "xlsx": "^0.18.5"
+  },
+  "devDependencies": {
+    "@sparticuz/chromium": "^123.0.1"
+  }
+}
