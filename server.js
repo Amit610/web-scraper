@@ -1,6 +1,6 @@
 const puppeteer = require("puppeteer");
 const express = require("express");
-// const chromium = require("@sparticuz/chromium");
+const chromium = require("@sparticuz/chromium");
 const xlsx = require("xlsx");
 const path = require("path");
 
@@ -103,10 +103,10 @@ app.post("/scrape", async (req, res) => {
   try {
     browser = await puppeteer.launch({
       headless: false,
-      // args: chromium.args,
-      // defaultViewport: chromium.defaultViewport,
-      // executablePath: await chromium.executablePath(),
-      // ignoreHTTPSErrors: true,
+      args: chromium.args,
+      defaultViewport: chromium.defaultViewport,
+      executablePath: await chromium.executablePath(),
+      ignoreHTTPSErrors: true,
     });
 
     const page = await browser.newPage();
