@@ -156,7 +156,7 @@ app.use(express.static(path.join(__dirname, "public")));
 async function getCompData(url, page) {
   await page.goto(url);
   const name = await page.$eval(
-    ".table tbody td:nth-child(2) p",
+    ".table tbody td:nth-child(2) p", 
     (p) => p.textContent
   );
   const status = await page.$eval(
