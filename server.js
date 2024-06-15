@@ -145,7 +145,7 @@
 
 const puppeteer = require("puppeteer");
 const express = require("express");
-const chromium = require("@sparticuz/chromium");
+// const chromium = require("@sparticuz/chromium");
 const xlsx = require("xlsx");
 const path = require("path");
 
@@ -256,11 +256,11 @@ app.post("/scrape", async (req, res) => {
       headless: false,
       args: ["--no-sandbox", "--disable-setuid-sandbox"],
       // args: chromium.args,
-      defaultViewport: chromium.defaultViewport,
-      executablePath: await chromium.executablePath(),
-      ignoreHTTPSErrors: true,
+      // defaultViewport: chromium.defaultViewport,
+      // executablePath: await chromium.executablePath(),
+      // ignoreHTTPSErrors: true,
     });
-
+   
     const page = await browser.newPage();
     const allLinks = await getLinks(url, page);
 
