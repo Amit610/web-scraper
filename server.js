@@ -145,7 +145,7 @@
 
 const puppeteer = require("puppeteer");
 const express = require("express");
-// const chromium = require("@sparticuz/chromium");
+const chromium = require("@sparticuz/chromium");
 const xlsx = require("xlsx");
 const path = require("path");
 
@@ -254,11 +254,20 @@ app.post("/scrape", async (req, res) => {
     // Launching Puppeteer with headless mode as false
     browser = await puppeteer.launch({
       headless: false,
-      args: ["--no-sandbox", "--disable-setuid-sandbox"],
+      args: [
+        "--no-sandbox",
+        "--disable-setuid-sandbox",
+        "--disable-dev-shm-usage",
+        "--disable-accelerated-2d-canvas",
+        "--no-first-run",
+        "--no-zygote",
+        // "--single-process",
+        "--disable-gpu",
+      ],
       // args: chromium.args,
-      // defaultViewport: chromium.defaultViewport,
-      // executablePath: await chromium.executablePath(),
-      // ignoreHTTPSErrors: true,
+      defaultViewport: chromium.defaultViewport,
+      executablePath: await chromium.executablePath(),
+      ignoreHTTPSErrors: true,
     });
    
     const page = await browser.newPage();
