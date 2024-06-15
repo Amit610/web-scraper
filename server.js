@@ -103,10 +103,10 @@ app.post("/scrape", async (req, res) => {
   try {
     browser = await puppeteer.launch({
       headless: false,
-      // args: chromium.args,
-      // defaultViewport: chromium.defaultViewport,
-      // executablePath: await chromium.executablePath(),
-      // ignoreHTTPSErrors: true,
+      args: chromium.args,
+      defaultViewport: chromium.defaultViewport,
+      executablePath: await chromium.executablePath(),
+      ignoreHTTPSErrors: true,
     });
 
     const page = await browser.newPage();
