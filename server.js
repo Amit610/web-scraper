@@ -254,8 +254,8 @@ app.post("/scrape", async (req, res) => {
     // Launching Puppeteer with headless mode as false
     browser = await puppeteer.launch({
       headless: false,
-      // args: ["--no-sandbox", "--disable-setuid-sandbox"],
-      args: chromium.args,
+      args: ["--no-sandbox", "--disable-setuid-sandbox"],
+      // args: chromium.args,
       defaultViewport: chromium.defaultViewport,
       executablePath: await chromium.executablePath(),
       ignoreHTTPSErrors: true,
@@ -282,7 +282,9 @@ app.post("/scrape", async (req, res) => {
       "Content-Disposition",
       'attachment; filename="companies.xlsx"'
     );
-    res.type("application/vnd.openxmlformats-officedocument.spreadsheetml.sheet");
+    res.type(
+      "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
+    );
     res.send(buffer);
   } catch (error) {
     res
