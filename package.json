@@ -10,7 +10,7 @@
   "keywords": [],
   "author": "",
   "license": "ISC",
-  "dependencies": {
+  "dependencies": { 
     "body-parser": "^1.20.2",
     "express": "^4.19.2",
     "puppeteer": "^22.9.0",
