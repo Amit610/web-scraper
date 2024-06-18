@@ -126,10 +126,11 @@ app.post("/scrape", async (req, res) => {
 
     const scrappedData = [];
     for (const link of allLinks) {
+      console.log(`Scraping data from ${link}`);
       const data = await getCompData(link, page);
       scrappedData.push(data);
     }
-
+    console.log("Scraping completed, creating Excel file.");
     const wb = xlsx.utils.book_new();
     const ws = xlsx.utils.json_to_sheet(scrappedData);
     xlsx.utils.book_append_sheet(wb, ws, "Sheet1");
