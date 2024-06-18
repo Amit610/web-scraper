@@ -1,9 +1,9 @@
 const puppeteer = require("puppeteer");
 const express = require("express");
-const chromium = require("@sparticuz/chromium");
+// const chromium = require("@sparticuz/chromium");
 const xlsx = require("xlsx");
 const path = require("path");
-require("dotenv").config();
+// require("dotenv").config();
 
 const app = express();
 app.use(express.json());
@@ -36,26 +36,26 @@ async function getCompData(url, page) {
     (a) => a.textContent
   );
   // PaidupCapital  and AuthorisedCapital
-  const tables = await page.$$(".table.table-striped");
-  let authorisedCapital = "";
-  let paidUpCapital = "";
+  // const tables = await page.$$(".table.table-striped");
+  // let authorisedCapital = "";
+  // let paidUpCapital = "";
 
-  for (const table of tables) {
-    const rows = await table.$$("tr");
-    for (const row of rows) {
-      const cells = await row.$$eval("td p", (tds) =>
-        tds.map((td) => td.textContent.trim())
-      );
-      if (cells.length === 2) {
-        const [key, value] = cells;
-        if (key === "Authorised Capital") {
-          authorisedCapital = value;
-        } else if (key === "Paid up capital") {
-          paidUpCapital = value;
-        }
-      }
-    }
-  }
+  // for (const table of tables) {
+  //   const rows = await table.$$("tr");
+  //   for (const row of rows) {
+  //     const cells = await row.$$eval("td p", (tds) =>
+  //       tds.map((td) => td.textContent.trim())
+  //     );
+  //     if (cells.length === 2) {
+  //       const [key, value] = cells;
+  //       if (key === "Authorised Capital") {
+  //         authorisedCapital = value;
+  //       } else if (key === "Paid up capital") {
+  //         paidUpCapital = value;
+  //       }
+  //     }
+  //   }
+  // }
   // Extracting Cloudflare protected email attribute string
   const cfEmailElement = await page.$("a.__cf_email__");
   let decodedEmail = "";
@@ -88,8 +88,8 @@ async function getCompData(url, page) {
     isGovernment: coc,
     inougration: doi,
     Email: decodedEmail,
-    AuthorisedCapital: authorisedCapital,
-    PaidUpCapital: paidUpCapital,
+    // AuthorisedCapital: authorisedCapital,
+    // PaidUpCapital: paidUpCapital,
   };
 }
 
@@ -104,21 +104,24 @@ app.post("/scrape", async (req, res) => {
   try {
     browser = await puppeteer.launch({
       headless: false,
-      args: [
-        "--no-sandbox",
-        "--disable-setuid-sandbox",
-        "--disable-dev-shm-usage",
-        "--disable-accelerated-2d-canvas",
-        "--no-first-run",
-        "--no-zygote",
-        // "--single-process",
-        "--disable-gpu",
-      ],
-      // executablePath: process.env.NODE_ENV === "production" ? process.env.PUPPETEER_EXECUTABLE_PATH : puppeteer.executablePath()
-      args: chromium.args,
-      defaultViewport: chromium.defaultViewport,
-      executablePath: await chromium.executablePath(),
-      ignoreHTTPSErrors: true,
+      // args: [
+      //   "--no-sandbox",
+      //   "--disable-setuid-sandbox",
+      //   "--disable-dev-shm-usage",
+      //   "--disable-accelerated-2d-canvas",
+      //   "--no-first-run",
+      //   "--no-zygote",
+      //   // "--single-process",
+      //   "--disable-gpu",
+      // ],
+      // executablePath:
+      //   process.env.NODE_ENV === "production"
+      //     ? process.env.PUPPETEER_EXECUTABLE_PATH
+      //     : puppeteer.executablePath(),
+      // args: chromium.args,
+      // defaultViewport: chromium.defaultViewport,
+      // executablePath: await chromium.executablePath(),
+      // ignoreHTTPSErrors: true,
     });
 
     const page = await browser.newPage();
@@ -126,11 +129,10 @@ app.post("/scrape", async (req, res) => {
 
     const scrappedData = [];
     for (const link of allLinks) {
-      console.log(`Scraping data from ${link}`);
       const data = await getCompData(link, page);
       scrappedData.push(data);
     }
-    console.log("Scraping completed, creating Excel file.");
+
     const wb = xlsx.utils.book_new();
     const ws = xlsx.utils.json_to_sheet(scrappedData);
     xlsx.utils.book_append_sheet(wb, ws, "Sheet1");
