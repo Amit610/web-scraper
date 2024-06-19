@@ -114,7 +114,6 @@ app.post("/scrape", async (req, res) => {
         // "--single-process",
         "--disable-gpu",
       ],
-      ignoreDefaultArgs: ['--disable-extensions'],
       executablePath:
         process.env.NODE_ENV === "production"
           ? process.env.PUPPETEER_EXECUTABLE_PATH
