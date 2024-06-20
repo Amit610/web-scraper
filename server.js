@@ -120,7 +120,7 @@ app.post("/scrape", async (req, res) => {
           ? process.env.PUPPETEER_EXECUTABLE_PATH
           : puppeteer.executablePath(),
       // args: chromium.args,
-      defaultViewport: chromium.defaultViewport,
+      // defaultViewport: chromium.defaultViewport,
       // executablePath: await chromium.executablePath(),
       ignoreHTTPSErrors: true,
     });
