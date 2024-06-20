@@ -105,6 +105,7 @@ app.post("/scrape", async (req, res) => {
     browser = await puppeteer.launch({
       headless: false,
       args: [
+        '--headless',
         "--no-sandbox",
         "--disable-setuid-sandbox",
         // "--disable-dev-shm-usage",
@@ -112,16 +113,16 @@ app.post("/scrape", async (req, res) => {
         // "--no-first-run",
         "--no-zygote",
         // "--single-process",
-        // "--disable-gpu",
+        "--disable-gpu",
       ],
       executablePath:
         process.env.NODE_ENV === "production"
           ? process.env.PUPPETEER_EXECUTABLE_PATH
           : puppeteer.executablePath(),
       // args: chromium.args,
-      // defaultViewport: chromium.defaultViewport,
+      defaultViewport: chromium.defaultViewport,
       // executablePath: await chromium.executablePath(),
-      // ignoreHTTPSErrors: true,
+      ignoreHTTPSErrors: true,
     });
 
     const page = await browser.newPage();
