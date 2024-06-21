@@ -1,6 +1,6 @@
 const puppeteer = require("puppeteer");
 const express = require("express");
-// const chromium = require("@sparticuz/chromium");
+const chromium = require("@sparticuz/chromium");
 const xlsx = require("xlsx");
 const path = require("path");
 require("dotenv").config();
@@ -118,9 +118,9 @@ app.post("/scrape", async (req, res) => {
         process.env.NODE_ENV === "production"
           ? process.env.PUPPETEER_EXECUTABLE_PATH
           : puppeteer.executablePath(),
-      // args: chromium.args,
-      // defaultViewport: chromium.defaultViewport,
-      // executablePath: await chromium.executablePath(),
+      args: chromium.args,
+      defaultViewport: chromium.defaultViewport,
+      executablePath: await chromium.executablePath(),
       ignoreHTTPSErrors: true,
     });
 
