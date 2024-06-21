@@ -1,15 +1,18 @@
-const puppeteer = require("puppeteer");
+const puppeteer = require('puppeteer-extra')
 const express = require("express");
 const chromium = require("@sparticuz/chromium");
 const xlsx = require("xlsx");
 const path = require("path");
 require("dotenv").config();
+const StealthPlugin = require("puppeteer-extra-plugin-stealth");
 
+puppeteer.use(StealthPlugin());
 const app = express();
 app.use(express.json());
 app.use(express.static(path.join(__dirname, "public")));
 
 async function getCompData(url, page) {
+  await page.goto(url, { waitUntil: 'networkidle2', timeout: 120000 }); 
   await page.goto(url);
   const name = await page.$eval(
     ".table tbody td:nth-child(2) p",
@@ -94,7 +97,27 @@ async function getCompData(url, page) {
 }
 
 async function getLinks(url, page) {
-  await page.goto(url);
+  
+  await page.goto(url, { waitUntil: 'networkidle2', timeout: 120000 }); // Increased timeout to 120 seconds
+
+  
+  // Add more debugging information
+  console.log("Waiting for .table selector");
+
+  
+ // Check if the selector exists on the page
+ const tableExists = await page.$('.table') !== null;
+ console.log("Table exists:", tableExists);
+
+ if (!tableExists) {
+   console.log("Table not found on the page");
+   return [];
+ }
+
+ await page.waitForSelector('.table a', { timeout: 120000, visible: true }); // Wait for the table to be visible
+
+ console.log("Selector found, extracting links");
+  
   return await page.$$eval(".table a", (links) => links.map((a) => a.href));
 }
 
@@ -102,8 +125,9 @@ app.post("/scrape", async (req, res) => {
   const { url } = req.body;
   let browser;
   try {
-    browser = await puppeteer.launch({
-      headless: false,
+    console.log("Launching browser...");
+    browser = await  puppeteer.launch({
+      headless: true,
       args: [
         "--no-sandbox",
         "--disable-setuid-sandbox",
@@ -118,21 +142,24 @@ app.post("/scrape", async (req, res) => {
         process.env.NODE_ENV === "production"
           ? process.env.PUPPETEER_EXECUTABLE_PATH
           : puppeteer.executablePath(),
-      args: chromium.args,
-      defaultViewport: chromium.defaultViewport,
-      executablePath: await chromium.executablePath(),
+      // args: chromium.args,
+      // defaultViewport: chromium.defaultViewport,
+      // executablePath: await chromium.executablePath(),
       ignoreHTTPSErrors: true,
     });
 
     const page = await browser.newPage();
+    console.log(`Navigating to ${url}`);
     const allLinks = await getLinks(url, page);
+    console.log(`Found ${allLinks.length} links`);
 
     const scrappedData = [];
     for (const link of allLinks) {
+      console.log(`Scraping data from ${link}`);
       const data = await getCompData(link, page);
       scrappedData.push(data);
     }
-
+    console.log("Scraping completed, creating Excel file.");
     const wb = xlsx.utils.book_new();
     const ws = xlsx.utils.json_to_sheet(scrappedData);
     xlsx.utils.book_append_sheet(wb, ws, "Sheet1");
